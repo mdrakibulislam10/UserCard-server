@@ -37,7 +37,7 @@ async function run() {
             const incompleteData = await incompleteCollection.find().toArray();
             res.send(incompleteData);
         });
-        /// toDoCollection
+        // toDoCollection
         app.get("/toDo", async (req, res) => {
             const toDoData = await toDoCollection.find().toArray();
             res.send(toDoData);
@@ -56,6 +56,32 @@ async function run() {
         app.get("/completed", async (req, res) => {
             const completedData = await completedCollection.find().toArray();
             res.send(completedData);
+        });
+
+        // count data
+
+        app.get("/dataCount", async (req, res) => {
+            const role = req.query.role;
+            const query = { role: role }
+
+            let dataCount;
+
+            if (role === "incomplete") {
+                dataCount = await incompleteCollection.countDocuments(query);
+            }
+            else if (role === "toDo") {
+                dataCount = await toDoCollection.countDocuments(query);
+            }
+            else if (role === "doing") {
+                dataCount = await doingCollection.countDocuments(query);
+            }
+            else if (role === "underReview") {
+                dataCount = await underReviewCollection.countDocuments(query);
+            }
+            else if (role === "complete") {
+                dataCount = await completedCollection.countDocuments(query);
+            }
+            res.send(dataCount.toString());
         });
 
 
