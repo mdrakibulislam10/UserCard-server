@@ -1,10 +1,14 @@
 const express = require('express');
 const app = express();
+var cors = require('cors')
 const port = 3000 || process.env.PORT;
 require('dotenv').config();
-
-
 const { MongoClient, ServerApiVersion } = require('mongodb');
+
+// middleware
+app.use(cors());
+app.use(express.json());
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.pqpiudt.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -22,6 +26,37 @@ async function run() {
         client.connect();
 
         // collections
+        const incompleteCollection = client.db("UserCard").collection("incompleteCollection");
+        const toDoCollection = client.db("UserCard").collection("ToDoCollection");
+        const doingCollection = client.db("UserCard").collection("doingCollection");
+        const underReviewCollection = client.db("UserCard").collection("underReviewCollection");
+        const completedCollection = client.db("UserCard").collection("completedCollection");
+
+        // incompleteCollection
+        app.get("/incomplete", async (req, res) => {
+            const incompleteData = await incompleteCollection.find().toArray();
+            res.send(incompleteData);
+        });
+        /// toDoCollection
+        app.get("/toDo", async (req, res) => {
+            const toDoData = await toDoCollection.find().toArray();
+            res.send(toDoData);
+        });
+        // doingCollection
+        app.get("/doing", async (req, res) => {
+            const doingData = await doingCollection.find().toArray();
+            res.send(doingData);
+        });
+        // underReviewCollection
+        app.get("/underReview", async (req, res) => {
+            const underReviewData = await underReviewCollection.find().toArray();
+            res.send(underReviewData);
+        });
+        // completedCollection
+        app.get("/completed", async (req, res) => {
+            const completedData = await completedCollection.find().toArray();
+            res.send(completedData);
+        });
 
 
         // Send a ping to confirm a successful connection
